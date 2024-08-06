@@ -1,9 +1,11 @@
-ttest for FileStorage class"""
+#!/usr/bin/python3
+"""Unittest for FileStorage class"""
 import unittest
 from models.engine.file_storage import FileStorage
 from models.base_model import BaseModel
 from models.state import State
 import os
+
 
 class TestFileStorage(unittest.TestCase):
     """Tests the FileStorage class"""
@@ -27,19 +29,16 @@ class TestFileStorage(unittest.TestCase):
         self.assertIn("State.{}".format(self.state.id), all_objs)
 
     def test_new(self):
-        """Test the new method"""
         new_obj = BaseModel()
         self.storage.new(new_obj)
         all_objs = self.storage.all()
         self.assertIn("BaseModel.{}".format(new_obj.id), all_objs)
 
     def test_save(self):
-        """Test the save method"""
         self.storage.save()
         self.assertTrue(os.path.exists("file.json"))
 
     def test_reload(self):
-        """Test the reload method"""
         self.state.save()
         self.storage.save()
         self.storage.reload()
@@ -47,18 +46,15 @@ class TestFileStorage(unittest.TestCase):
         self.assertIn("State.{}".format(self.state.id), all_objs)
 
     def test_delete(self):
-        """Test the delete method"""
         self.storage.delete(self.state)
         all_objs = self.storage.all()
         self.assertNotIn("State.{}".format(self.state.id), all_objs)
 
     def test_get(self):
-        """Test the get method"""
         obj = self.storage.get(State, self.state.id)
         self.assertEqual(obj, self.state)
 
     def test_count(self):
-        """Test the count method"""
         count_all = self.storage.count()
         count_state = self.storage.count(State)
         self.assertEqual(count_state, 1)
