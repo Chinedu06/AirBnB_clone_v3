@@ -38,6 +38,9 @@ class DBStorage:
         if HBNB_ENV == "test":
             Base.metadata.drop_all(self.__engine)
 
+        session_factory = sessionmaker(bind=self.__engine, expire_on_commit=False)
+        self.__session = scoped_session(session_factory)
+
     def all(self, cls=None):
         """query on the current database session"""
         new_dict = {}
@@ -65,10 +68,6 @@ class DBStorage:
     def reload(self):
         """reloads data from the database"""
         Base.metadata.create_all(self.__engine)
-        session_factory = sessionmaker(bind=self.__engine,
-                                       expire_on_commit=False)
-        Session = scoped_session(session_factory)
-        self.__session = Session()
 
     def close(self):
         """call remove() method on the private session attribute"""
@@ -87,3 +86,4 @@ class DBStorage:
             return self.__session.query(cls).count()
         return sum(self.__session.query(classes[cls]).count()
                    for cls in classes)
+
